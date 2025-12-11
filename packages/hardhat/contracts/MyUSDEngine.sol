@@ -14,6 +14,7 @@ error Engine__NotRateController();
 error Engine__InsufficientCollateral();
 error Engine__TransferFailed();
 
+
 contract MyUSDEngine is Ownable {
     uint256 private constant COLLATERAL_RATIO = 150; // 150% collateralization required
     uint256 private constant LIQUIDATOR_REWARD = 10; // 10% reward for liquidators
@@ -145,12 +146,46 @@ contract MyUSDEngine is Ownable {
     }
 
     // Checkpoint 5: Accruing Interest & Managing Borrow Rates
-    function setBorrowRate(uint256 newRate) external onlyRateController {}
+    function setBorrowRate(uint256 newRate) external onlyRateController {
+        _accrueInterest();
+        borrowRate = newRate;
+        emit BorrowRateUpdated(newRate);
+    }
 
     // Checkpoint 6: Repaying Debt & Withdrawing Collateral
-    function repayUpTo(uint256 amount) public {}
+    function repayUpTo(uint256 amount) public {
+        if(amount == 0) revert Engine__InvalidAmount();
+        uint256 amountInShares = _getMyUSDToShares(amount);
+        
+        if(amountInShares > s_userDebtShares[msg.sender]){
+            amountInShares = s_userDebtShares[msg.sender];
+            amount = getCurrentDebtValue(msg.sender);
+        }
 
-    function withdrawCollateral(uint256 amount) external {}
+        if(i_myUSD.balanceOf(msg.sender) < amount) revert MyUSD__InsufficientBalance();
+        if(i_myUSD.allowance(msg.sender, address(this)) < amount) revert MyUSD__InsufficientAllowance();
+        
+        s_userDebtShares[msg.sender] -= amountInShares;
+        totalDebtShares -= amountInShares;
+        i_myUSD.burnFrom(msg.sender, amount);
+
+        emit DebtSharesBurned(msg.sender, amount, amountInShares);
+    }
+
+    function withdrawCollateral(uint256 amount) external {
+        if(amount == 0) revert Engine__InvalidAmount();
+        if(s_userCollateral[msg.sender] < amount) revert Engine__InsufficientCollateral();
+
+        s_userCollateral[msg.sender] -= amount;
+        if (s_userDebtShares[msg.sender] > 0) {
+            _validatePosition(msg.sender);
+        }
+
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        if(!success) revert Engine__TransferFailed();
+
+        emit CollateralWithdrawn(msg.sender, amount, i_oracle.getETHMyUSDPrice());
+    }
 
     // Checkpoint 7: Liquidation - Enforcing System Stability
     function isLiquidatable(address user) public view returns (bool) {}
