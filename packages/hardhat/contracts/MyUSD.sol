@@ -13,6 +13,11 @@ error MyUSD__InsufficientAllowance();
 error MyUSD__InvalidAddress();
 error MyUSD__NotAuthorized();
 
+/**
+ * @title MyUSD (ERC20 token)
+ * @author Rahul Dindigala
+ * @notice The actual stablecoin token (ERC20).Can be minted and burned only by the engine
+ */
 contract MyUSD is ERC20, ERC20Burnable, Ownable {
     address public stakingContract;
     address public engineContract;

@@ -18,6 +18,12 @@ error Staking__InvalidSavingsRate();
 error Staking__EngineNotSet();
 error Staking__NotRateController();
 
+/**
+ * @title MyUSDStaking
+ * @author Rahul Dindigala
+ * @dev Main contract for MyUSD staking protocol
+ * @notice This contract is responsible for managing the staking and rewards for MyUSD. Allows users to stake MyUSD. Earns yield from borrow rates. Creates buy pressure for MyUSD
+ */
 contract MyUSDStaking is Ownable, ReentrancyGuard {
     MyUSD public immutable myUSD;
     IMyUSDEngine public engine;

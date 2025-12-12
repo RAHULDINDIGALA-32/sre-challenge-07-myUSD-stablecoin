@@ -4,7 +4,9 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @notice Simple DEX contract that allows users to swap ETH for MyUSD and MyUSD for ETH
+ * @title DEX
+ * @author Rahul Dindigala
+ * @notice Simple DEX contract that allows users to swap ETH for MyUSD and MyUSD for ETH. And  naively used to determine the market price of MyUSD
  */
 contract DEX {
     /* ========== GLOBAL VARIABLES ========== */

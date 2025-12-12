@@ -14,7 +14,12 @@ error Engine__NotRateController();
 error Engine__InsufficientCollateral();
 error Engine__TransferFailed();
 
-
+/**
+ * @title MyUSDEngine
+ * @author Rahul Dindigala
+ * @dev Main contract for MyUSD protocol
+ * @notice This contract is responsible for managing the MyUSD protocol and its underlying assets MyUSD and MyUSDStaking contracts. It also handles the borrowing and liquidation of MyUSD by users.
+ */
 contract MyUSDEngine is Ownable {
     uint256 private constant COLLATERAL_RATIO = 150; // 150% collateralization required
     uint256 private constant LIQUIDATOR_REWARD = 10; // 10% reward for liquidators
@@ -78,7 +83,7 @@ contract MyUSDEngine is Ownable {
     }
 
     function calculateCollateralValue(address user) public view returns (uint256) {
-        return s_userCollateral[user] * i_oracle.getETHUSDPrice() / PRECISION;
+        return s_userCollateral[user] * i_oracle.getETHMyUSDPrice() / PRECISION;
     }
 
     // Checkpoint 3: Interest Calculation System
@@ -89,9 +94,13 @@ contract MyUSDEngine is Ownable {
         uint256 timeElapsed = block.timestamp - lastUpdateTime;
           if (timeElapsed == 0 || borrowRate == 0) return debtExchangeRate;
 
-        uint256  interest = (totalDebtShares * borrowRate * timeElapsed) / (SECONDS_PER_YEAR * 10000);
+        uint256  interest = ( borrowRate * timeElapsed * PRECISION) / (SECONDS_PER_YEAR * 10000);
 
-        return debtExchangeRate + (interest * PRECISION) / totalDebtShares;
+        //return debtExchangeRate + (interest * PRECISION) / totalDebtShares;
+         uint256 factor = PRECISION + interest;
+
+        // Multiply and rescale
+        return (debtExchangeRate * factor) / PRECISION;
     }
 
     function _accrueInterest() internal {
@@ -195,6 +204,8 @@ contract MyUSDEngine is Ownable {
     }
 
     function liquidate(address user) external {
+        _accrueInterest();
+
         if(!isLiquidatable(user)) revert Engine__NotLiquidatable();
          uint256 userDebtValue = getCurrentDebtValue(user);
          uint256 userCollateral = s_userCollateral[user];
