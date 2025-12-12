@@ -15,7 +15,7 @@ You will learn how decentralized stablecoins maintain a peg, manage risk, and ke
 - **DEX Contract (Sepolia):** `0x73B129413d41700140881B00931B71549D141C83`
 - **MyUSD Engine Contract (Sepolia):** `0x732dD61fCB2159F5587EBfb4BCD75b76EF9d0E30`  
 - **MyUSD Staking Contract (Sepolia):** `0x0eC6b9A8bc4bc5FdEAbEB05a8AEE074De80336D7`  
-- **Block Explorer:** https://sepolia.etherscan.io/address/0x0eC6b9A8bc4bc5FdEAbEB05a8AEE074De80336D7
+- **Block Explorer:** https://sepolia.etherscan.io/address/0x732dD61fCB2159F5587EBfb4BCD75b76EF9d0E30
 
 ---
 
