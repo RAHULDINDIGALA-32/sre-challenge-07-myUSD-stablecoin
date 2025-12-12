@@ -10,7 +10,7 @@ You will learn how decentralized stablecoins maintain a peg, manage risk, and ke
 
 ## 🚀 Live Demo
 
-- **Frontend (Vercel):** https://YOUR-DEPLOYED-URL.vercel.app/  
+- **Frontend (Vercel):** https://sre-challenge-06-my-usd-stablecoin.vercel.app/ 
 - **MyUSD Stablecoin Contract (Sepolia):** `0x1b17A59971Dd30760715E6739FAAa2289c70F064`
 - **DEX Contract (Sepolia):** `0x73B129413d41700140881B00931B71549D141C83`
 - **MyUSD Engine Contract (Sepolia):** `0x732dD61fCB2159F5587EBfb4BCD75b76EF9d0E30`  
